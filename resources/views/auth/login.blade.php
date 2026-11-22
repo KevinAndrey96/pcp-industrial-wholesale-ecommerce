@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en">
   <head>
-  	<title>Login 07</title>
+  	<title>PCP Industrial Wholesale | B2B Distribution Platform</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	
+
 	<link rel="stylesheet" href="/LoginStyles/style.css">
 
 	</head>
@@ -20,11 +20,11 @@
 			<div class="row justify-content-center">
 				<div class="col-md-12 col-lg-10">
 					<div class="wrap d-md-flex">
-						<div style="background:#2ab2e2" class="p-4 p-lg-5 text-center d-flex align-items-center order-md-last">
+						<div style="background:#2ab2e2; width:50%;" class="p-4 p-lg-5 text-center d-flex align-items-center order-md-last"  >
 							<div class="text w-100">
-								<img class="img-fluid" src="./assets/images/pcp.png">
+								<img class="img-fluid" src="/assets/images/pcp2.png">
 
-								
+
 								<!--<a href="#" class="btn btn-white btn-outline-white">Registrarse</a>-->
 							</div>
 			      </div>
@@ -35,7 +35,7 @@
 			      		</div>
 								<div class="w-100">
 									<p class="social-media d-flex justify-content-end">
-										
+
 									</p>
 								</div>
 			      	</div>
@@ -79,22 +79,31 @@
                                         {{ __('Recordarme') }}
                                     </label>
                                 </div>
-                                    
+
                             </div>
-                            <a style="margin:auto; color: #2ab2e2;" href="{{ url('/register') }}">No tienes cuenta?, Registrate</a>
+                           <!-- <a style="margin:auto; color: #2ab2e2;" href="{{ url('/register') }}">No tienes cuenta?, Registrate</a>-->
                         </div>
 
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" style="background:#2ab2e2" color="white" class="btn">
-                                    {{ __('Ingresar') }}
+                        <div class="form-group row mb-0" >
+                            <div class="col-md-8 offset-md-4 ">
+                                <button type="submit" style="background:#2ab2e2; color:white;"  class="btn">
+                                   {{ __('Ingresar') }}
                                 </button>
 
-                                @if (Route::has('password.request'))
-                                    
-                                @endif
                             </div>
                         </div>
+
+                        <div class="form-group row" style="margin-top: 6px;">
+                            <div class="col-md-6 offset-md-3 ">
+                                @if (Route::has('password.request'))
+                                    <a class="btn btn-link" href="{{ route('password.request') }}">
+                                        {{ __('¿Olvidaste tu contraseña?') }}
+                                    </a>
+                                @endif
+
+                            </div>
+                        </div>
+
                     </form>
 		        </div>
 		      </div>

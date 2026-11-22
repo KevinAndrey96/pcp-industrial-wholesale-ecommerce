@@ -8,12 +8,30 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
+
     protected $table = 'products';
+
     protected $fillable = [
-        
         'name',
+        'code',
         'price',
         'list_id',
-       
+        'image',
+        'url',
     ];
+
+    public function priceList()
+    {
+        return $this->belongsTo(PriceList::class, 'list_id');
+    }
+
+    public function list()
+    {
+        return $this->belongsTo(PriceList::class, 'list_id');
+    }
+
+    public function orderProducts()
+    {
+        return $this->hasMany(OrderProduct::class, 'product_id');
+    }
 }

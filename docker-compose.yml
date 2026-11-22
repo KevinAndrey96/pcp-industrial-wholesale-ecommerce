@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pcp_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+    environment:
+      APP_NAME: "PCP Industrial Wholesale"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: "http://localhost:8000"
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: pcp_wholesale_db
+      DB_USERNAME: pcp_user
+      DB_PASSWORD: pcp_secret
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_FROM_ADDRESS: "orders@pcp-industrial.local"
+      MAIL_FROM_NAME: "PCP Industrial Wholesale"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    networks:
+      - pcp_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: pcp_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: pcp_wholesale_db
+      MYSQL_USER: pcp_user
+      MYSQL_PASSWORD: pcp_secret
+      MYSQL_ROOT_PASSWORD: root_secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - pcp_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "pcp_user", "-ppcp_secret"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - pcp_network
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: pcp_mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
+    networks:
+      - pcp_network
+
+networks:
+  pcp_network:
+    driver: bridge
+
+volumes:
+  pcp_mysql_data:
+    driver: local

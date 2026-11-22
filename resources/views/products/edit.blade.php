@@ -5,18 +5,18 @@
 @if(Session::has('message'))
 
  <div class="alert alert-success" role="alert">
-      
+
       {{Session::get('message')}}
- 
+
  </div>
-   
+
 @endif
 
 
 
 <div class="card">
   <div class="card-header">
-    Editar 
+    Editar
   </div>
   <div class="card-body">
   <form action="{{url('/products/'.$product->id)}}" method="POST" enctype="multipart/form-data">
@@ -30,10 +30,22 @@
         <label for="price">Precio: </label>
         <input class="form-control" type="number" name="price" id="price" value="{{ $product->price }}">
       </div>
+      <div class="form-group">
+        <label for="image">Imagen: </label>
+        <input class="form-control" type="text" name="image" id="image" value="{{ $product->image }}">
+      </div>
+      <div class="form-group">
+        <label for="url">Ruta: </label>
+        <input class="form-control" type="text" name="url" id="url" value="{{ $product->url }}">
+      </div>
+      <div class="form-group">
+        <label for="code">Referencia: </label>
+        <input class="form-control" type="text" name="code" id="code" value="{{ $product->code }}">
+      </div>
 
-    <input type="submit" class="btn btn-info" value="Editar">
-   
-    
+    <input style="float:right" type="submit" class="btn btn-info" value="Guardar">
+
+
   </form>
 </div>
 </div>

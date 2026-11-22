@@ -20,7 +20,10 @@ class CreatePriceListsTable extends Migration
             $table->string('currency');
             $table->string('country');
             $table->timestamps();
+        });
 
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('price_list_id')->references('id')->on('price_lists')->onDelete('set null');
         });
     }
 
@@ -31,6 +34,10 @@ class CreatePriceListsTable extends Migration
      */
     public function down()
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['price_list_id']);
+        });
+
         Schema::dropIfExists('price_lists');
     }
 }

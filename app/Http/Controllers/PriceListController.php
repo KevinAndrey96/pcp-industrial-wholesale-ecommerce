@@ -3,134 +3,127 @@
 namespace App\Http\Controllers;
 
 use App\Models\PriceList;
-use Facade\Ignition\Http\Controllers\ScriptController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class PriceListController extends Controller
 {
-    public function index(Request $request)
-    { 
-      
-        $data['lists'] = PriceList::where('role', $request->input('role'))->get();
-        return view('lists.index',$data);
-  
+    /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
     }
 
-    
-    
+    /**
+     * Display a listing of price lists filtered by role.
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function index(Request $request)
+    {
+        $role = $request->input('role');
+        $query = PriceList::query();
+
+        if ($role && $role !== 'all') {
+            $query->where('role', $role);
+        }
+
+        $lists = $query->orderBy('id', 'asc')->get();
+
+        return view('lists.index', compact('lists'));
+    }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new price list.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
     public function create(Request $request)
     {
-        $role =  $request;
-
-       
-        return view('lists.createList', $role);
+        return view('lists.createList', [
+            'role' => $request->input('role', 'Distribuidor'),
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created price list in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request) 
-    {  
-
-        $fields = [
-
-            'name' =>'required|string|max:100',
-            
-        ];
-
-        $message = ["required" => "El campo :attribute es requerido"];
-        $this -> validate($request, $fields, $message);
-        
-         $listData = request()->except('_token');
-        PriceList::insert($listData);  
-
-        return redirect('/list/createList?role='.$request->role)->with('messageSuccess','Lista registrada con éxito');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Users  $Users
-     * @return \Illuminate\Http\Response
-     */
-    public function show()
+    public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'role' => 'required|string|in:Distribuidor,Ferretero,Administrador',
+            'currency' => 'nullable|string|max:10',
+        ], [
+            'name.required' => 'El nombre de la lista de precios es requerido.',
+            'role.required' => 'El rol asociado es requerido.',
+        ]);
+
+        if (empty($validated['currency'])) {
+            $validated['currency'] = 'COP';
+        }
+
+        PriceList::create($validated);
+
+        return redirect('/list/createList?role='.$request->role)
+            ->with('messageSuccess', 'Lista de precios registrada con éxito.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified price list.
      *
-     * @param  \App\Models\Users  $Users
-     * @return \Illuminate\Http\Response
+     * @param int|string $id
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
-        
-        
         $list = PriceList::findOrFail($id);
-
-       
-
-        
-        
-        return view('lists.editList',compact('list'));
-
-    }
-
-    public function form()
-    {
+        return view('lists.editList', compact('list'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified price list in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Users  $Users
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int|string $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
-        
-        $listData = request()->except(['_token','_method']);
-        PriceList::where('id','=',$id)->update($listData);
+        $list = PriceList::findOrFail($id);
 
-        return redirect('home')->with('Mensaje','La lista ha sido modificada con éxito');
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'currency' => 'nullable|string|max:10',
+        ]);
 
+        $list->update($validated);
+
+        return redirect('home')->with('Mensaje', 'La lista de precios ha sido modificada con éxito.');
     }
 
-    
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified price list from storage.
      *
-     * @param  \App\Models\Users  $Users
-     * @return \Illuminate\Http\Response
+     * @param int|string $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
-        
-        if(Auth::user()->role=='Administrador'){
+        if (! Auth::user()->isAdmin()) {
+            return redirect()->back()->with('error', 'No tiene permisos para eliminar listas de precios.');
+        }
 
-            PriceList::destroy($id);
-    
-            }
-    
-            return view('home');
-        
+        $list = PriceList::findOrFail($id);
+        $list->delete();
 
+        return redirect()->back()->with('deleteSuccess', 'Lista de precios eliminada correctamente.');
     }
-
-    
-} 
+}

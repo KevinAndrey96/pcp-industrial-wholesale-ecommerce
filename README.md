@@ -1,62 +1,234 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# PCP Industrial Wholesale E-Commerce & Supply Chain Platform
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![CI Pipeline](https://github.com/KevinAndrey96/pcp-industrial-wholesale-ecommerce/actions/workflows/ci.yml/badge.svg)](https://github.com/KevinAndrey96/pcp-industrial-wholesale-ecommerce/actions/workflows/ci.yml)
+[![PHP Version](https://img.shields.io/badge/PHP-8.1%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/Laravel-8.x-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
+[![Database](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![Architecture](https://img.shields.io/badge/Architecture-Service%20Layer%20%7C%20SOLID-0056B3)](#architecture--design-patterns)
+[![Docker](https://img.shields.io/badge/Docker-Compose%20Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## About Laravel
+An enterprise-grade B2B distribution and wholesale supply chain platform developed for **PCP (Partes y Complementos Plásticos)** — an industrial manufacturing leader of thermoplastic valves, piping systems, hydraulic fittings, and plumbing solutions.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The platform orchestrates multi-tiered wholesale operations, connecting **Industrial Manufacturers**, **Regional Wholesale Distributors**, and **Local Hardware Stores (Ferreterías)** across Colombia and international markets.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Table of Contents
 
-## Learning Laravel
+- [Business Domain & Supply Chain Flow](#business-domain--supply-chain-flow)
+- [Key Features](#key-features)
+- [Architecture & Design Patterns](#architecture--design-patterns)
+- [Multi-Tier Role Hierarchy](#multi-tier-role-hierarchy)
+- [Tech Stack](#tech-stack)
+- [Quickstart with Docker Compose](#quickstart-with-docker-compose)
+- [Native Local Installation](#native-local-installation)
+- [Default Demonstration Accounts](#default-demonstration-accounts)
+- [Makefile Commands](#makefile-commands)
+- [License](#license)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Business Domain & Supply Chain Flow
 
-## Laravel Sponsors
+Industrial manufacturers in the plumbing and fluid-handling sector operate under multi-tiered distribution models. Rather than fulfilling fragmented retail orders, the manufacturer empowers regional master distributors to supply local hardware stores while maintaining price controls, credit terms, and regional territory exclusivity.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Ferretero as Local Hardware Store (Ferretero)
+    actor Distribuidor as Regional Distributor
+    actor Admin as Manufacturer / SuperAdmin
 
-### Premium Partners
+    Note over Ferretero,Admin: 1. Catalog Browsing & Cart Staging
+    Ferretero->>Ferretero: Selects PVC/CPVC valves & fittings from assigned price list
+    Ferretero->>Distribuidor: Submits wholesale order / quotation request
+    
+    Note over Ferretero,Distribuidor: 2. Quotation Review & Pricing Negotiation
+    Distribuidor->>Distribuidor: Reviews stock, validates regional credit & adjusts suggested margin
+    Distribuidor->>Ferretero: Dispatches formal B2B quotation PDF via email
+    
+    Note over Ferretero,Distribuidor: 3. Order Approval & Fulfillment
+    Ferretero->>Distribuidor: Approves quotation & confirms delivery schedule
+    Distribuidor->>Ferretero: Ships freight via logistics dispatch (OperLog / Surenvíos)
+    Distribuidor->>Distribuidor: Updates order lifecycle status (In Transit -> Delivered)
+    
+    Note over Distribuidor,Admin: 4. Master Volume Restocking
+    Distribuidor->>Admin: Places factory bulk replenishment order at distributor tier rates
+    Admin->>Distribuidor: Factory dispatch & batch invoice generation
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## Key Features
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **Multi-Tiered Pricing Matrix:** Support for role-specific, territory-specific, and currency-specific price lists (COP for domestic networks, USD for international export lines).
+- **Dynamic B2B Quotation Engine:** Ironmongers request price transfers; regional distributors adjust per-item suggested pricing and auto-generate legal PDF quotations.
+- **DomPDF Document Pipeline:** High-fidelity, print-ready PDF generation for purchase orders (`ORD-*`) and commercial quotations (`COT-*`).
+- **Transactional Integrity:** All multi-item checkout operations are wrapped within atomic database transactions with inventory auditing.
+- **Bulk Catalog Management:** Full Excel import/export (`.xlsx`, `.csv`) for rapid catalog updates and batch user onboarding powered by `Maatwebsite/Laravel-Excel`.
+- **Integrated Email Dispatch:** Transactional email triggers for order status updates, new quote alerts, and PDF document delivery.
+- **Logistics Tracking Shortcuts:** Direct integrations with regional carrier portals (`OperLog`, `Surenvíos`).
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Architecture & Design Patterns
 
-## Security Vulnerabilities
+The codebase adheres to **Clean Architecture** and **SOLID** principles, decoupling business logic from HTTP transport and ORM persistence:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```mermaid
+flowchart TD
+    subgraph Client Layer
+        Web["Blade Views / SB Admin 2 UI"]
+        PDF["DomPDF Render Engine"]
+    end
+
+    subgraph HTTP & Validation Layer
+        Router["web.php (Auth & Role Middleware)"]
+        Controllers["Controllers (OrderProducts, Products, Users, PriceLists)"]
+        Requests["Form Requests (StoreProduct, StoreUser, StoreOrder)"]
+    end
+
+    subgraph Service & Domain Layer
+        OrderService["OrderService (State Transitions & Atomic Orders)"]
+        InvoicePdfService["InvoicePdfService (Quotation & Order PDF Rendering)"]
+        ExcelService["Excel Imports & Exports (Products, Users)"]
+    end
+
+    subgraph Persistence Layer
+        Eloquent["Eloquent Models (Order, Product, User, PriceList, OrderProduct)"]
+        MySQL[("MySQL 8.0 Database")]
+    end
+
+    Web --> Router
+    Router --> Requests
+    Requests --> Controllers
+    Controllers --> OrderService
+    Controllers --> InvoicePdfService
+    Controllers --> ExcelService
+    OrderService --> Eloquent
+    InvoicePdfService --> PDF
+    Eloquent --> MySQL
+```
+
+### Highlights of the Refactor
+- **Service Layer Pattern:** `App\Services\OrderService` centralizes order calculation, role-based seller assignments, and status machine transitions.
+- **Document Generation Service:** `App\Services\InvoicePdfService` encapsulates layout compilation and file streaming for DomPDF.
+- **Eager Loading Optimization:** Eliminated N+1 query patterns across cart calculations, purchase order listings, and user association views using `with(['buyer', 'seller', 'items.product'])`.
+- **Defensive Error Handling:** Replaced brittle array index access (`$orders[1]`) with safe collection methods.
+
+---
+
+## Multi-Tier Role Hierarchy
+
+| Role | Access Level | Responsibilities |
+|---|---|---|
+| **Administrador** (Manufacturer) | Global / SuperAdmin | Manages global catalog, price lists, assigns users, audits all regional transfers and nationwide distributor performance. |
+| **Distribuidor** (Master Distributor) | Regional Hub | Purchases wholesale volume directly from the factory, receives order transfer requests from ironmongers in their territory, issues custom quotations, and updates delivery tracking. |
+| **Ferretero** (Hardware Store) | Local Retailer | Browses products assigned to their pricing tier, submits order transfers to regional distributors, downloads official PDF quotations, and tracks shipment arrival. |
+
+---
+
+## Tech Stack
+
+- **Backend Framework:** Laravel 8.x
+- **Runtime Environment:** PHP 8.1+
+- **Relational Database:** MySQL 8.0 (InnoDB, Foreign Key Integrity)
+- **Containerization:** Docker & Docker Compose
+- **Document & Spreadsheet Generation:** `barryvdh/laravel-dompdf`, `maatwebsite/excel`
+- **Frontend / Styling:** Blade, Bootstrap 4, SB Admin 2, FontAwesome 5
+- **Local Email Testing:** Mailpit (`axllent/mailpit`)
+
+---
+
+## Quickstart with Docker Compose
+
+Ensure Docker and Docker Compose are installed on your machine.
+
+### 1. Automated Setup via Makefile
+```bash
+# Clone the repository
+git clone git@github.com:KevinAndrey96/pcp-industrial-wholesale-ecommerce.git
+cd pcp-industrial-wholesale-ecommerce
+
+# Initialize environment, spin up containers, run migrations and seeds
+make setup
+```
+
+### 2. Manual Docker Compose Execution
+```bash
+# Copy sample environment configuration
+cp .env.example .env
+
+# Build and start services in the background
+docker compose up -d --build
+
+# Install PHP dependencies & generate application key
+docker compose exec app composer install
+docker compose exec app php artisan key:generate
+
+# Execute database migrations and seed realistic industrial data
+docker compose exec app php artisan migrate --force
+docker compose exec app php artisan db:seed --force
+```
+
+- **Application URL:** [http://localhost:8000](http://localhost:8000)
+- **Mailpit Web UI (Email Inbox):** [http://localhost:8025](http://localhost:8025)
+
+---
+
+## Native Local Installation
+
+If running outside Docker:
+
+```bash
+# 1. Install Composer dependencies
+composer install
+
+# 2. Configure environment file
+cp .env.example .env
+php artisan key:generate
+
+# 3. Configure your MySQL credentials in .env and run migrations
+php artisan migrate --force
+php artisan db:seed --force
+
+# 4. Start local development server
+php artisan serve
+```
+
+---
+
+## Default Demonstration Accounts
+
+The database seeder initializes 3 operational accounts to test the entire multi-tier supply chain:
+
+| Role | Email Address | Password | Pricing Tier |
+|---|---|---|---|
+| **Administrador** | `admin@pcp-industrial.com` | `PCPIndustrial2026!` | SuperAdmin Privileges |
+| **Distribuidor** | `distribuidor.andina@pcp-industrial.com` | `PCPIndustrial2026!` | Lista Distribuidores Nacional |
+| **Ferretero** | `ferreteria.central@pcp-industrial.com` | `PCPIndustrial2026!` | Lista Ferreteros Andina |
+
+---
+
+## Makefile Commands
+
+| Command | Description |
+|---|---|
+| `make setup` | Automated first-time project setup (containers + db + seed) |
+| `make up` | Start Docker containers in detached mode |
+| `make down` | Stop running containers |
+| `make restart` | Restart all services |
+| `make logs` | Stream application and database logs |
+| `make app-bash` | Open shell inside the Laravel PHP container |
+| `make mysql-bash` | Open interactive MySQL client inside database container |
+| `make migrate` | Run pending database migrations |
+| `make seed` | Populate database with realistic valve/pipe industrial catalog |
+| `make fresh` | Drop all database tables, re-migrate, and re-seed |
+| `make lint` | Run PHP syntax validator across all project directories |
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-source software licensed under the [MIT License](LICENSE).

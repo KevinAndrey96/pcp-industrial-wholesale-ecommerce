@@ -9,7 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>{{ config('app.name', 'PCP Industrial Wholesale') }} | B2B Distribution Platform</title>
+    <link rel="shortcut icon" href="/assets/images/faviconpcp.png">
 
     <!-- Custom fonts for this template-->
     <link href="/dash/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -22,6 +23,10 @@
 
     <!-- Custom styles for this page -->
     <link href="/dash/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/dash/vendor/Magnific-Popup-master/dist/magnific-popup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
 
 </head>
 
@@ -34,8 +39,8 @@
         <ul style="background:#2ab2e2" class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-               <img src="/assets/images/pcp.png" width="50px">   
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" @if(Auth::user()->role == 'Distribuidor' || Auth::user()->role == 'Ferretero' ) href="/home" @else href="/users?role=all" @endif>
+               <img src="/assets/images/pcp2.png" width="50px" >
             </a>
 
             <!-- Divider -->
@@ -63,7 +68,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="far fa-user"></i>
                     <span>Administradores</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -77,7 +82,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fas fa-shuttle-van"></i>
                     <span>Distribuidores</span>
                 </a>
                 <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -91,7 +96,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse4"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fas fa-hammer"></i>
                     <span>Ferreteros</span>
                 </a>
                 <div id="collapse4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -103,7 +108,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse5"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fas fa-users"></i>
                     <span>Usuarios</span>
                 </a>
                 <div id="collapse5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -115,7 +120,7 @@
             </li>
 
 
-           
+
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -128,7 +133,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages1"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="fas fa-list"></i>
                     <span>Listas de precios</span>
                 </a>
                 <div id="collapsePages1" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
@@ -140,6 +145,9 @@
                         <h6 class="collapse-header">Ferreteros</h6>
                         <a class="collapse-item" href="/lists?role=Ferretero">Ver</a>
                         <a class="collapse-item" href="{{ url('/list/createList?role=Ferretero') }}">Crear</a>
+                        <h6 class="collapse-header">Lista general</h6>
+                        <a class="collapse-item" href="{{ url('/chooseList?id=all') }}">Importar</a>
+                        <a class="collapse-item" href="{{ url('/exportProducts/all ')}}">Exportar</a>
                     </div>
                 </div>
             </li>
@@ -148,82 +156,144 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages2"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="fas fa-clipboard-check"></i>
                     <span>Pedidos</span>
                 </a>
                 <div id="collapsePages2" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-               
-                        <a class="collapse-item" href="login.html">Ver</a>
-                        
+                        <a class="collapse-item" href="{{ url('/showOrders?role=Administrador') }}">Ver pedidos</a>
                     </div>
                 </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages3"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-money-check"></i>
+                    <span>Transferencias</span>
+                </a>
+                <div id="collapsePages3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="/allTransfers">Ver transferencias</a>
+                    </div>
+
+                </div>
+
             </li>
             @elseif(Auth::user()->role == 'Distribuidor')
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
+                <a class="nav-link collapsed" href="/home" data-target="#collapsePages1"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-burn"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ url('/orders') }}">
+                    <i class="fas fa-parking"></i>
+                    <span>Catálogo de productos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ url('/home') }}">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Portal B2B</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages1"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Pedidos</span>
+                </a>
+                <div id="collapsePages1" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{{ url('/myOrders') }}">Mis pedidos</a>
+                        <a class="collapse-item" href="{{ url('/orders/')}}">Solicitar pedido</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages2"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="fas fa-money-check"></i>
                     <span>Transferencias</span>
                 </a>
                 <div id="collapsePages2" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-               
-                        <a class="collapse-item" href="#">Ver</a>
-                        
+
+                        <a class="collapse-item" href="{{ url('/showOrders?role=Distribuidor') }}">Ver transferencias</a>
+
+
                     </div>
                 </div>
             </li>
-
+            <!--
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages3"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="fas fa-ring"></i>
                     <span>Productos</span>
                 </a>
                 <div id="collapsePages3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-               
+
                         <a class="collapse-item" href="{{ url('/distributors') }}">Ver</a>
-                        
+
                     </div>
                 </div>
             </li>
+            -->
 
             @elseif(Auth::user()->role == 'Ferretero')
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
+                <a class="nav-link collapsed" href="/home" data-target="#collapsePages1"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-burn"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ url('/orders') }}">
+                    <i class="fas fa-parking"></i>
+                    <span>Catálogo de productos</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages2"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="fas fa-money-check"></i>
                     <span>Transferencias</span>
                 </a>
                 <div id="collapsePages2" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-               
-                        <a class="collapse-item" href="#">Ver</a>
-                        
+
+                        <a class="collapse-item" href="{{ url('/orders/')}}">Solicitar transferencia</a>
+                        <a class="collapse-item" href="{{ url('/myOrders')}}">Mis transferencias</a>
+
                     </div>
                 </div>
             </li>
-
+            <!--
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages3"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="fas fa-ring"></i>
                     <span>Productos</span>
                 </a>
                 <div id="collapsePages3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-               
+
                         <a class="collapse-item" href="{{ url('/ironmongers') }}">Ver</a>
-                        
+
                     </div>
                 </div>
             </li>
+            -->
 
             @endif
 
@@ -237,7 +307,7 @@
 
 
 
-            
+
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -247,7 +317,7 @@
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
 
-           
+
         </ul>
         <!-- End of Sidebar -->
 
@@ -265,16 +335,13 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    
+
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-search fa-fw"></i>
-                            </a>
+
                             <!-- Dropdown - Messages -->
                             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
                                 aria-labelledby="searchDropdown">
@@ -303,17 +370,17 @@
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name }}, {{ Auth::user()->role }} </span>
                                 <img class="img-profile rounded-circle"
                                     src="{{ isset(Auth::user()->image) ? '/storage/'.Auth::user()->image : '/dash/img/undraw_profile.svg' }}">
-                            
-                           
+
+
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="{{url('/users').'/'.Auth::user()->id.'/passwordEdit'}}">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Cambiar contraseña 
+                                    Cambiar contraseña
                                 </a>
-                               
+
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -343,7 +410,7 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            
+
             <!-- End of Footer -->
 
         </div>
@@ -373,7 +440,7 @@
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
                     <button class="btn btn-primary" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();"  type="button" data-dismiss="modal">Si</button>
-                   
+
                 </div>
             </div>
         </div>
@@ -402,6 +469,76 @@
 
     <!-- Page level custom scripts -->
     <script src="/dash/js/demo/datatables-demo.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#datatable').DataTable( {
+                "language": {
+                    "lengthMenu": " Mostar _MENU_ registros por página",
+                    "zeroRecords": "Nada encontrado - disculpa  ",
+                    "info": "Mostrando la página _PAGE_ de _PAGES_",
+                    "infoEmpty": "No records available",
+                    "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                    "search" : "Buscar:",
+                    "paginate" : {
+                        "next" : "Siguiente",
+                        "previous": "Anterior"
+
+                    }
+                },
+                "bDestroy": true
+
+
+            } );
+        } );
+
+
+        $(document).ready(function() {
+            $('#datatable').DataTable(
+            {
+                //"bSort" : false,
+                "aaSorting": [],
+                "bDestroy": true
+            });
+         });
+
+        /*
+        $(document).ready(function() {
+            $('#datatable').DataTable( {
+                "order": [[ 6, "desc" ]],
+                "bDestroy": true
+
+            } );
+        } );
+        */
+
+    </script>
+
+    <!-- Page level custom scripts -->
+
+    <script scr="/dash/vendor/Magnific-Popup-master/dist/jquery.magnific-popup.min.js"></script>
+    <script src="/dash/vendor/Magnific-Popup-master/dist/jquery.magnific-popup.js"></script>
+
+
+
+    <script type="text/javascript">
+            $('.product').magnificPopup({
+                type : 'image'
+            });
+
+    </script>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        /*
+        $boton_submit = document.getElementById('form-continue');
+        console.log($boton_submit);
+
+        $('#form-continue').submit(function(e){
+            e.preventDefault();
+            swal("Hello world!");
+        });
+*/
+    </script>
 
 </body>
 

@@ -10,19 +10,21 @@ class PriceList extends Model
     use HasFactory;
 
     protected $table = 'price_lists';
+
     protected $fillable = [
         'name',
         'role',
         'currency',
         'country',
-
-        
     ];
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class, 'list_id');
     }
 
-
+    public function users()
+    {
+        return $this->hasMany(User::class, 'price_list_id');
+    }
 }

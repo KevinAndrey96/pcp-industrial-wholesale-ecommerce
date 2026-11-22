@@ -40,29 +40,39 @@
     {{csrf_field()}}
     <div class="form-group">
       <label for="name">Nombre: </label>
-      <input class="form-control" type="text" name="name" id="name"></input>
+      <input class="form-control" type="text" name="name" id="name">
+    </div>
+    <div class="form-group">
+      <label for="document_type">Tipo de documento: </label>
+      <select class="form-control" name="document_type">
+        <option value="CC" selected>CC</option>
+        <option value="TI">TI</option>
+        <option value="NIT">NIT</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="document_number">Número de documento: </label>
+      <input class="form-control" type="text" name="document_number" id="document_number">
     </div>
     <div class="form-group">
       <label for="phone">Teléfono: </label>
-      <input class="form-control" type="number" name="phone" id="phone"></input>
+      <input class="form-control" type="number" name="phone" id="phone">
     </div>
     <div class="form-group">
       <label for="email">Email: </label>
-      <input class="form-control" type="email" name="email" id="email"></input>
+      <input class="form-control" type="email" name="email" id="email">
     </div>
     <div class="form-group">
       <label for="country">País: </label>
       <select class="form-control" name="country">
-
-        <option value="Colombia" selected>Colombia</option>
-        <option value="Peru">Perú</option>
-        <option value="Mexico">Mexico</option>
-
+          <option value="Colombia" selected>Colombia</option>
+          <option value="Peru">Perú</option>
+          <option value="México">Mexico</option>
       </select>
     </div>
     <div class="form-group">
       <label for="city">Ciudad: </label>
-      <input class="form-control" type="text" name="city" id="city"></input>
+      <input class="form-control" type="text" name="city" id="city">
     </div>
     <div class="form-group">
       <label for="role">Rol: </label>
@@ -144,8 +154,6 @@
           seleDist.disabled = true;
           seleIron.disabled = true;
         }
-        
-
       }
 
 </script>

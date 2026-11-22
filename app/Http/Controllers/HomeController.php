@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -17,14 +17,16 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Show the application dashboard or redirect to administrative panel.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable|RedirectResponse
      */
     public function index()
     {
-        
-        
+        if (Auth::user()->isAdmin()) {
+            return redirect('/users?role=all');
+        }
+
         return view('home');
     }
 }

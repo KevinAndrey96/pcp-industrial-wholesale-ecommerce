@@ -48,6 +48,19 @@
       <label for="price">Precio: </label>
       <input class="form-control" type="number" name="price" id="price">
     </div>
+    <div class="form-group">
+      <label for="image">Imagen: </label>
+      <input class="form-control" type="text" name="image" id="images">
+    </div>
+    <div class="form-group">
+      <label for="url">Ruta: </label>
+      <input class="form-control" type="text" name="url" id="url">
+    </div>
+    <div class="form-group">
+      <label for="code">Referencia: </label>
+      <input class="form-control" type="text" name="code" id="code">
+    </div>
+
     <input type="hidden" name="list_id"  value="{{ $list->id }}">
 
     <input type="submit" class="btn btn-info" value="Crear">

@@ -2,56 +2,102 @@
 @section('content')
 
 
-
-
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Administradores</h1>
-    
+@if(Session::has('message'))
+<div class="alert alert-success" role="alert">
+     {{ Session::get('message') }}
 </div>
 
-<div class="row">
-    <table class="table table-bordered table-responsive" id="datatable" width="100%" cellspacing="0">
-        <thead class="thead-light">
-            <tr>
-                 <th>Id</th>
-                 <th>Nombre</th>
-                 <th>Telefono</th>
-                 <th>Email</th>
-                 <th>Pais</th>
-                 <th>Ciudad</th>
-                 <th>Rol</th>
-                 <th>Nombre del establecimiento</th>
-                 <th>Editar/Eliminar</th>
-         </tr>
-        </thead>
-        <tbody>
-            @foreach($admins as $admin)
-            <tr>
-                <td>{{$admin->id}}</td>
-                <td>{{$admin->name}}</td>
-                <td>{{$admin->phone}}</td>
-                <td>{{$admin->email}}</td>
-                <td>{{$admin->country}}</td>
-                <td>{{$admin->city}}</td>
-                <td>{{$admin->role}}</td>
-                <td>{{$admin->establishment_name}}</td>
-                <td>
-                    
-                    <a class="btn btn-warning" href="{{ url('/users/'.$admin->id.'/edit') }}" style="margin:3px">Editar</a>
-                    
+@endif
 
-                    <form method="post" action="{{ url('/users/'.$admin->id) }}" >
-                        {{csrf_field()}}
-                        {{method_field('DELETE')}}
-                        
-                        <button class = "btn btn-danger" type="submit" onclick="return confirm('¿Borrar?');" style="margin:3px">Borrar</button>
-                    
-                    </form>
-               
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>     
+@if(Session::has('deleteSuccess'))
+
+    <div class="alert alert-success" role="alert">
+
+      {{ Session::get('deleteSuccess') }}
+
+    </div>
+
+@endif
+
+<!--
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"></h1>
+
+</div>
+-->
+
+<div class="card">
+    <div class="card-header">
+       Usuarios
+    </div>
+    <div class="card-body">
+
+        <div class="row justify-content-center" >
+            <div class="col-auto mt-5">
+
+            <table class="table-bordered table-responsive" id="datatable" width="100%" cellspacing="0">
+                <thead class="thead-light">
+                    <tr>
+                        <th style="text-align: center;">Id</th>
+                        <th style="text-align: center; padding:10px;">Nombre</th>
+                        <th style="text-align: center; padding:10px;">Tipo de documento</th>
+                        <th style="text-align: center; padding:10px;">Número de documento</th>
+                        <th style="text-align: center; padding:10px;">Teléfono</th>
+                        <th style="text-align: center; padding:10px;">Email</th>
+                        <th style="text-align: center; padding:10px;">Lista</th>
+                        <th style="text-align: center; padding:10px;">País</th>
+                        <th style="text-align: center; padding:10px;">Ciudad</th>
+                        <th style="text-align: center; padding:10px;">Rol</th>
+                        <th style="text-align: center; padding:10px;">Nombre del establecimiento</th>
+                        <th style="text-align: center; padding:10px;">Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach($admins as $admin)
+                    <tr>
+                        <td style="text-align: center; padding:10px">{{$admin->id}}</td>
+                        <td style="text-align: center; padding:10px;">{{$admin->name}}</td>
+                        <td style="text-align: center; padding:10px;">{{$admin->document_type}}</td>
+                        <td style="text-align: center; padding:10px;">{{$admin->document_number}}</td>
+                        <td style="text-align: center; padding:10px;">{{$admin->phone}}</td>
+                        <td style="text-align: center; padding:10px;">{{$admin->email}}</td>
+                        @if($admin->role == 'Administrador')
+                        <td style="text-align: center; padding:10px;">{{'No aplica'}}</td>
+                        @else
+                        <td style="text-align: center; padding:10px;">{{$admin->price_list_id}}</td>
+                        @endif
+                        <td style="text-align: center; padding:10px;">{{$admin->country}}</td>
+                        <td style="text-align: center; padding:10px;">{{$admin->city}}</td>
+                        <td style="text-align: center; padding:10px;">{{$admin->role}}</td>
+                        <td style="text-align: center; padding:10px;">{{$admin->establishment_name}}</td>
+                        <td style="text-align: center; padding:10px;">
+
+                            <a class="btn btn-warning" href="{{ url('/users/'.$admin->id.'/edit') }}" style="margin:3px">Editar</a>
+
+
+                            <form method="post" action="{{ url('/users/'.$admin->id) }}" >
+                                {{csrf_field()}}
+                                {{method_field('DELETE')}}
+
+                                <button class = "btn btn-danger" type="submit" onclick="return confirm('¿Esta seguro que quiere borrar este usuario?');" style="margin:3px">Borrar</button>
+
+                            </form>
+
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <form method="post" action="/chooseListUser">
+                @csrf
+                <input  class="btn btn-success" style="float:right; margin:30px;" type="submit" value="Importar usuarios">
+            </form>
+            <div style="clear:both; float:none;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
+
