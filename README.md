@@ -8,7 +8,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose%20Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An enterprise-grade B2B distribution and wholesale supply chain platform developed for **PCP (Partes y Complementos Plásticos)** — an industrial manufacturing leader of thermoplastic valves, piping systems, hydraulic fittings, and plumbing solutions.
+An enterprise-grade B2B distribution and wholesale supply chain platform developed for **PCP (Partes y Complementos Plásticos)**, an industrial manufacturing leader of thermoplastic valves, piping systems, hydraulic fittings, and plumbing solutions.
 
 The platform orchestrates multi-tiered wholesale operations, connecting **Industrial Manufacturers**, **Regional Wholesale Distributors**, and **Local Hardware Stores (Ferreterías)** across Colombia and international markets.
 
