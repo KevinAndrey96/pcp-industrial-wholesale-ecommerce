@@ -48,6 +48,9 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
+      - name: Clean Legacy Vendor
+        run: rm -rf vendor
+
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-reqs
 
