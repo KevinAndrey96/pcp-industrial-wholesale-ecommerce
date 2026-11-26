@@ -1,7 +1,7 @@
 # Plataforma B2B de distribución mayorista PCP (Laravel)
 
 [![CI](https://github.com/KevinAndrey96/laravel-pcp-industrial-wholesale-ecommerce/actions/workflows/ci.yml/badge.svg)](https://github.com/KevinAndrey96/laravel-pcp-industrial-wholesale-ecommerce/actions/workflows/ci.yml)
-![PHP](https://img.shields.io/badge/PHP-8.0%20%7C%208.1-777BB4?logo=php&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.0-777BB4?logo=php&logoColor=white)
 ![Laravel](https://img.shields.io/badge/Laravel-8-FF2D20?logo=laravel&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
@@ -61,7 +61,7 @@ flowchart LR
 
 ## Desarrollo local
 
-Requisitos: Docker con Compose v2, o PHP 8.0/8.1, Composer y MySQL 8.
+Requisitos: Docker con Compose v2, o PHP 8.0, Composer y MySQL 8.
 
 ```bash
 make setup   # copia .env, construye la imagen, levanta los servicios, migra y siembra
@@ -82,7 +82,7 @@ La aplicación queda en `http://localhost:8000` y Mailpit en `http://localhost:8
 GitHub Actions ejecuta en cada push y pull request:
 
 - `composer validate --strict` y **Laravel Pint**.
-- Migraciones y semillas sobre MySQL 8 y **PHPUnit** en PHP 8.0 y 8.1: rutas protegidas, back office solo para administradores, órdenes visibles solo para sus partes, cotización y estados solo para el vendedor y registro de ferreterías con datos completos.
+- Migraciones y semillas sobre MySQL 8 y **PHPUnit** en PHP 8.0 (la versión de la imagen Docker): rutas protegidas, back office solo para administradores, órdenes visibles solo para sus partes, cotización y estados solo para el vendedor y registro de ferreterías con datos completos.
 - Validación de `docker-compose.yml`, construcción de la imagen y arranque de Artisan dentro del contenedor.
 
 ```bash
