@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\PriceList;
-use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\PriceList;
+use App\Models\Product;
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class IndustrialSupplySeeder extends Seeder
 {
@@ -49,7 +49,7 @@ class IndustrialSupplySeeder extends Seeder
 
         // 2. Seed Users
         $admin = User::firstOrCreate(
-            ['email' => 'admin@pcp-industrial.local'],
+            ['email' => 'admin@example.com'],
             [
                 'name' => 'Director de Operaciones PCP',
                 'phone' => '+57 (4) 444-1234',
@@ -63,7 +63,7 @@ class IndustrialSupplySeeder extends Seeder
         );
 
         $distributor = User::firstOrCreate(
-            ['email' => 'distribuidor@pcp-industrial.local'],
+            ['email' => 'distribuidor@example.com'],
             [
                 'name' => 'Distribuciones Hidráulicas del Valle S.A.S.',
                 'phone' => '+57 (2) 555-5678',
@@ -77,7 +77,7 @@ class IndustrialSupplySeeder extends Seeder
         );
 
         $ironmonger = User::firstOrCreate(
-            ['email' => 'ferretero@pcp-industrial.local'],
+            ['email' => 'ferretero@example.com'],
             [
                 'name' => 'Ferretería & Suministros La Principal',
                 'phone' => '+57 (1) 310-9876',

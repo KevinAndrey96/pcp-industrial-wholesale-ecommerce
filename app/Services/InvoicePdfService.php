@@ -10,7 +10,6 @@ class InvoicePdfService
     /**
      * Render a professional PDF instance for quotation or purchase order.
      *
-     * @param Order $order
      * @return \Barryvdh\DomPDF\PDF
      */
     public function generateQuotationPdf(Order $order)
@@ -28,7 +27,6 @@ class InvoicePdfService
     /**
      * Render and download a professional PDF invoice / purchase order.
      *
-     * @param Order $order
      * @return \Illuminate\Http\Response
      */
     public function downloadOrderPdf(Order $order)
@@ -43,19 +41,20 @@ class InvoicePdfService
         ]);
 
         $filename = "Orden_Compra_PCP_{$order->id}.pdf";
+
         return $pdf->download($filename);
     }
 
     /**
      * Render and download a formal B2B quotation PDF.
      *
-     * @param Order $order
      * @return \Illuminate\Http\Response
      */
     public function downloadQuotationPdf(Order $order)
     {
         $pdf = $this->generateQuotationPdf($order);
         $filename = "Cotizacion_Industrial_PCP_{$order->id}.pdf";
+
         return $pdf->download($filename);
     }
 }

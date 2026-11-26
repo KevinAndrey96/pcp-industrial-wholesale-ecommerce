@@ -19,7 +19,6 @@ class PriceListController extends Controller
     /**
      * Display a listing of price lists filtered by role.
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -39,7 +38,6 @@ class PriceListController extends Controller
     /**
      * Show the form for creating a new price list.
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function create(Request $request)
@@ -52,7 +50,6 @@ class PriceListController extends Controller
     /**
      * Store a newly created price list in storage.
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
@@ -79,20 +76,20 @@ class PriceListController extends Controller
     /**
      * Show the form for editing the specified price list.
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\View\View
      */
     public function edit($id)
     {
         $list = PriceList::findOrFail($id);
+
         return view('lists.editList', compact('list'));
     }
 
     /**
      * Update the specified price list in storage.
      *
-     * @param Request $request
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
@@ -112,7 +109,7 @@ class PriceListController extends Controller
     /**
      * Remove the specified price list from storage.
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)

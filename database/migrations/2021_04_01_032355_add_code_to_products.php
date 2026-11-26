@@ -11,15 +11,12 @@ class AddCodeToProducts extends Migration
      *
      * @return void
      */
-    
-     public function up()
+    public function up()
     {
         Schema::table('products', function (Blueprint $table) {
             $table->string('code')->nullable()->after('price');
-
         });
     }
-    
 
     /**
      * Reverse the migrations.

@@ -4,18 +4,17 @@ namespace App\Exports;
 
 use App\Models\Product;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ProductsExport implements FromCollection, WithHeadings, WithTitle, WithColumnWidths, WithStyles
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function __construct($id)
     {
         $this->id = $id;
@@ -31,6 +30,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithTitle, WithCol
     {
         return 'Lista de precios';
     }
+
     public function columnWidths(): array
     {
         return [
@@ -43,10 +43,11 @@ class ProductsExport implements FromCollection, WithHeadings, WithTitle, WithCol
             'G' => 50,
         ];
     }
+
     public function styles(Worksheet $sheet): array
     {
         return [
-            1   => ['font' => ['bold' => true]],
+            1 => ['font' => ['bold' => true]],
         ];
     }
 
@@ -55,27 +56,26 @@ class ProductsExport implements FromCollection, WithHeadings, WithTitle, WithCol
         return [
             'ID',
             'ID LISTA',
-            'NOMBRE', 
+            'NOMBRE',
             'PRECIO',
             'CÓDIGO',
             'IMAGEN',
             'URL',
-        ]; 
+        ];
     }
 
     public function collection()
     {
-        if($this->id=="all"){
+        if ($this->id == 'all') {
             $products = Product::all();
             $products->makeHidden(['created_at', 'updated_at']);
-            return $products;
 
-        }else{
-            $products = Product::where('list_id','=',$this->id)->get();
+            return $products;
+        } else {
+            $products = Product::where('list_id', '=', $this->id)->get();
             $products->makeHidden(['created_at', 'updated_at']);
+
             return $products;
         }
-
-        
     }
 }

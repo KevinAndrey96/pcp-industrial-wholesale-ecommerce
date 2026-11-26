@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "da47ccbad547f1c9b674c66719c76a85",
+    "content-hash": "15b1239fa785191f30d4c3dba63d8756",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -747,66 +747,6 @@
                 }
             ],
             "time": "2021-03-23T08:01:37+00:00"
-        },
-        {
-            "name": "genert/bbcode",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/genert/bbcode.git",
-                "reference": "82e230a6da9ac3412c18fe2de0249acfd702d63f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/genert/bbcode/zipball/82e230a6da9ac3412c18fe2de0249acfd702d63f",
-                "reference": "82e230a6da9ac3412c18fe2de0249acfd702d63f",
-                "shasum": ""
-            },
-            "require-dev": {
-                "phpunit/phpunit": "9.1.4"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Genert\\BBCode\\BBCodeServiceProvider"
-                    ],
-                    "aliases": {
-                        "Invoice": "Genert\\BBCode\\Facades\\BBCode"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Genert\\BBCode\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Genert Org",
-                    "email": "hi@genert.org",
-                    "homepage": "http://genert.org"
-                }
-            ],
-            "description": "BBCode parser from or to HTML.",
-            "keywords": [
-                "PSR-1",
-                "PSR-2",
-                "PSR-4",
-                "bbcode",
-                "laravel",
-                "parser"
-            ],
-            "support": {
-                "issues": "https://github.com/Genert/bbcode/issues",
-                "source": "https://github.com/genert/bbcode/tree/master"
-            },
-            "time": "2020-06-11T13:03:27+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -6266,6 +6206,73 @@
             "time": "2020-07-09T08:09:16+00:00"
         },
         {
+            "name": "laravel/pint",
+            "version": "v1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/pint.git",
+                "reference": "e0a8cef58b74662f27355be9cdea0e726bbac362"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/e0a8cef58b74662f27355be9cdea0e726bbac362",
+                "reference": "e0a8cef58b74662f27355be9cdea0e726bbac362",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-tokenizer": "*",
+                "ext-xml": "*",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.14.4",
+                "illuminate/view": "^9.51.0",
+                "laravel-zero/framework": "^9.2.0",
+                "mockery/mockery": "^1.5.1",
+                "nunomaduro/larastan": "^2.4.0",
+                "nunomaduro/termwind": "^1.15.1",
+                "pestphp/pest": "^1.22.4"
+            },
+            "bin": [
+                "builds/pint"
+            ],
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "App\\": "app/",
+                    "Database\\Seeders\\": "database/seeders/",
+                    "Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nuno Maduro",
+                    "email": "enunomaduro@gmail.com"
+                }
+            ],
+            "description": "An opinionated code formatter for PHP.",
+            "homepage": "https://laravel.com",
+            "keywords": [
+                "format",
+                "formatter",
+                "lint",
+                "linter",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/pint/issues",
+                "source": "https://github.com/laravel/pint"
+            },
+            "time": "2023-02-14T16:31:02+00:00",
+            "published-time": "2023-02-14T16:37:25+00:00"
+        },
+        {
             "name": "laravel/sail",
             "version": "1.x-dev",
             "source": {
@@ -8398,16 +8405,15 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "barryvdh/laravel-dompdf": 20,
-        "genert/bbcode": 20,
-        "maatwebsite/excel": 20
-    },
-    "prefer-stable": false,
+    "stability-flags": {},
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.4|^8.0"
+        "php": "^7.4|^8.0|^8.1|^8.2"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "platform-dev": {},
+    "platform-overrides": {
+        "php": "8.0.2"
+    },
+    "plugin-api-version": "2.11.0"
 }

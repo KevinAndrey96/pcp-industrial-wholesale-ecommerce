@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Exports\ProductsExport;
+use App\Imports\ProductsImport;
 use App\Models\PriceList;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ProductsExport;
-use App\Imports\ProductsImport;
 
 class ProductsController extends Controller
 {
@@ -23,8 +23,7 @@ class ProductsController extends Controller
     /**
      * Display a listing of products for a specific price list.
      *
-     * @param Request $request
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\View\View
      */
     public function index(Request $request, $id)
@@ -41,20 +40,19 @@ class ProductsController extends Controller
     /**
      * Show the form for creating a new product in a price list.
      *
-     * @param Request $request
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\View\View
      */
     public function create(Request $request, $id)
     {
         $list = PriceList::findOrFail($id);
+
         return view('products.create', compact('list'));
     }
 
     /**
      * Store a newly created product in storage.
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
@@ -80,20 +78,20 @@ class ProductsController extends Controller
     /**
      * Show the form for editing the specified product.
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\View\View
      */
     public function edit($id)
     {
         $product = Product::with('priceList')->findOrFail($id);
+
         return view('products.edit', compact('product'));
     }
 
     /**
      * Update the specified product in storage.
      *
-     * @param Request $request
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
@@ -116,7 +114,6 @@ class ProductsController extends Controller
     /**
      * Remove the specified product from storage.
      *
-     * @param Product $product
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Product $product)
@@ -124,6 +121,7 @@ class ProductsController extends Controller
         if (Auth::user()->isAdmin()) {
             $listId = $product->list_id;
             $product->delete();
+
             return redirect('/products/'.$listId)->with('deleteSuccess', 'Producto eliminado exitosamente.');
         }
 
@@ -146,7 +144,6 @@ class ProductsController extends Controller
     /**
      * View for choosing price lists for import/export.
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function chooseList(Request $request)
@@ -156,13 +153,14 @@ class ProductsController extends Controller
         }
 
         $list = PriceList::findOrFail($request->id);
+
         return view('lists.chooseList', compact('list'));
     }
 
     /**
      * Export price list products to Excel.
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function export($id)
@@ -173,14 +171,14 @@ class ProductsController extends Controller
 
         $list = PriceList::findOrFail($id);
         $cleanName = preg_replace('/[^A-Za-z0-9_\-]/', '_', $list->name);
+
         return Excel::download(new ProductsExport($id), 'LISTA_PCP_'.$cleanName.'.xlsx');
     }
 
     /**
      * Import products from Excel into specified price list.
      *
-     * @param Request $request
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function import(Request $request, $id)

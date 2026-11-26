@@ -11,7 +11,9 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     const ROLE_ADMIN = 'Administrador';
+
     const ROLE_DISTRIBUTOR = 'Distribuidor';
+
     const ROLE_IRONMONGER = 'Ferretero';
 
     protected $table = 'users';

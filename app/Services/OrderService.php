@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\OrderProduct;
-use App\Models\Product;
 use App\Models\PriceList;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -15,13 +15,8 @@ class OrderService
     /**
      * Create a new wholesale order or quotation from cart data.
      *
-     * @param User $buyer
-     * @param array $cartItems Array of ['product_id' => int, 'quantity' => int]
-     * @param string $address
-     * @param string $city
-     * @param string|null $comment
-     * @param int|null $designatedSellerId
-     * @return Order
+     * @param  array  $cartItems Array of ['product_id' => int, 'quantity' => int]
+     *
      * @throws InvalidArgumentException
      */
     public function createOrder(
@@ -118,11 +113,6 @@ class OrderService
 
     /**
      * Transition order status with audit validation.
-     *
-     * @param Order $order
-     * @param string $newStatus
-     * @param User $actingUser
-     * @return Order
      */
     public function transitionStatus(Order $order, string $newStatus, User $actingUser): Order
     {
@@ -149,8 +139,6 @@ class OrderService
     /**
      * Retrieve orders based on user permissions and role filtering.
      *
-     * @param User $user
-     * @param string|null $filterRole
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getOrdersForUser(User $user, ?string $filterRole = null)
@@ -160,6 +148,7 @@ class OrderService
             if ($filterRole && $filterRole !== 'all') {
                 $query->where('buyer_role', $filterRole);
             }
+
             return $query->get();
         }
 

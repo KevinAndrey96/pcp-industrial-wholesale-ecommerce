@@ -32,12 +32,19 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
+# Install PHP dependencies first so they are cached between source changes
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --prefer-dist --no-scripts --no-autoloader
+
 # Copy application files
 COPY . /var/www/html
+RUN composer dump-autoload --optimize
 
-# Configure permissions for storage and bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+# Hand the application to the runtime user
+RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+USER www-data
 
 # Expose HTTP port
 EXPOSE 8000
