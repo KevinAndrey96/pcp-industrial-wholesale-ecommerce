@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\GeneralMail;
 use App\Models\Order;
 use App\Models\OrderProduct;
-use App\Models\PriceList;
 use App\Models\Product;
 use App\Models\User;
-use App\Mail\GeneralMail;
-use App\Services\OrderService;
 use App\Services\InvoicePdfService;
-use Carbon\Carbon;
+use App\Services\OrderService;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -21,13 +18,11 @@ use Illuminate\Support\Facades\Mail;
 class OrderProductsController extends Controller
 {
     protected OrderService $orderService;
+
     protected InvoicePdfService $pdfService;
 
     /**
      * OrderProductsController constructor.
-     *
-     * @param OrderService $orderService
-     * @param InvoicePdfService $pdfService
      */
     public function __construct(OrderService $orderService, InvoicePdfService $pdfService)
     {
@@ -39,7 +34,6 @@ class OrderProductsController extends Controller
     /**
      * Display the shopping cart trolley with selected products.
      *
-     * @param Request $request
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function trolley(Request $request)
@@ -74,7 +68,6 @@ class OrderProductsController extends Controller
     /**
      * Process checkout, create the order, and dispatch notifications.
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function bill(Request $request)
@@ -126,7 +119,7 @@ class OrderProductsController extends Controller
             if ($buyer->isIronmonger()) {
                 $subject = 'Transferencia solicitada exitosamente';
                 $text = 'Su solicitud de pedido #'.$order->id.' fue enviada al distribuidor seleccionado. En breve recibirá la cotización formal con el valor final aprobado.';
-                
+
                 try {
                     Mail::to($buyer->email)->send(new GeneralMail($subject, $text));
 
@@ -145,7 +138,7 @@ class OrderProductsController extends Controller
             // Direct order by distributor to manufacturer (Administrator)
             try {
                 $pdf = $this->pdfService->generateQuotationPdf($order);
-                $subject = "Envío de cotización comercial - Pedido #".$order->id;
+                $subject = 'Envío de cotización comercial - Pedido #'.$order->id;
                 $text = 'Apreciado Distribuidor,<br><br>En respuesta a su solicitud, adjuntamos la cotización de su pedido #'.$order->id.'.<br><br>Cordialmente,<br>PCP Industrial Wholesale.';
 
                 Mail::send('mails.general', compact('subject', 'text'), function ($mail) use ($pdf, $buyer, $subject) {
@@ -158,9 +151,9 @@ class OrderProductsController extends Controller
             }
 
             return redirect('/orders')->with('messageSuccess', 'Pedido solicitado con éxito. Cotización generada.');
-
         } catch (Exception $e) {
             Log::error('Order creation failed: '.$e->getMessage());
+
             return redirect('/orders')->with('error', 'Ocurrió un error al procesar el pedido: '.$e->getMessage());
         }
     }
@@ -168,7 +161,6 @@ class OrderProductsController extends Controller
     /**
      * List incoming orders for Administrator or Distributor.
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function showOrder(Request $request)
@@ -190,12 +182,12 @@ class OrderProductsController extends Controller
     /**
      * Show detailed view of an incoming order.
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function detailOrder(Request $request)
     {
         $order = Order::with(['items.product', 'buyer', 'seller'])->findOrFail($request->id);
+        abort_unless($order->isVisibleTo(Auth::user()), 404);
         $orders = $order->items;
         $products = $orders->map(function ($item) {
             return $item->product;
@@ -211,12 +203,12 @@ class OrderProductsController extends Controller
     /**
      * Show detailed view of a customer's own order.
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function detailMyOrder(Request $request)
     {
         $order = Order::with(['items.product', 'buyer', 'seller'])->findOrFail($request->id);
+        abort_unless($order->isVisibleTo(Auth::user()), 404);
         $orders = $order->items;
         $products = $orders->map(function ($item) {
             return $item->product;
@@ -232,16 +224,16 @@ class OrderProductsController extends Controller
     /**
      * Update order status with audit transition.
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function changeStatus(Request $request)
     {
         $order = Order::findOrFail($request->id);
+        abort_unless($order->isManagedBy(Auth::user()), 404);
         $this->orderService->transitionStatus($order, $request->status, Auth::user());
 
         if ($order->buyer && $order->buyer->email) {
-            $subject = "Actualización de estado en su pedido #".$order->id;
+            $subject = 'Actualización de estado en su pedido #'.$order->id;
             $text = "Estimado/a {$order->buyer->name}, el estado de su pedido con identificador #{$order->id} ha cambiado a: <strong>{$order->status}</strong>.";
             try {
                 Mail::to($order->buyer->email)->send(new GeneralMail($subject, $text));
@@ -271,7 +263,6 @@ class OrderProductsController extends Controller
     /**
      * Process wholesale quotation pricing adjustments and notify buyer.
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function quotation(Request $request)
@@ -279,6 +270,7 @@ class OrderProductsController extends Controller
         $ids = explode(',', $request->ids);
         $prices = explode(',', $request->prices);
         $order = Order::with(['buyer', 'seller', 'items.product'])->findOrFail($request->idOrder);
+        abort_unless($order->isManagedBy(Auth::user()), 404);
 
         $newTotal = 0;
 
@@ -305,7 +297,7 @@ class OrderProductsController extends Controller
             $pdf = $this->pdfService->generateQuotationPdf($order);
             $buyer = $order->buyer;
             $seller = $order->seller;
-            $subject = "Cotización aprobada para el pedido #".$order->id;
+            $subject = 'Cotización aprobada para el pedido #'.$order->id;
             $text = "Estimado cliente,<br><br>Su distribuidor {$seller->name} ha emitido la cotización formal con identificador interno #{$order->id}.<br><br>En el documento adjunto encontrará el desglose detallado.";
 
             Mail::send('mails.general', compact('subject', 'text'), function ($mail) use ($pdf, $buyer, $subject) {
@@ -323,13 +315,13 @@ class OrderProductsController extends Controller
     /**
      * Download the official quotation PDF document.
      *
-     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function downloadPDF(Request $request)
     {
         $orderId = $request->id_order ?: $request->id;
         $order = Order::with(['buyer', 'seller', 'items.product'])->findOrFail($orderId);
+        abort_unless($order->isVisibleTo(Auth::user()), 404);
 
         return $this->pdfService->downloadQuotationPdf($order);
     }

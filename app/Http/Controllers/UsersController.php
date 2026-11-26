@@ -25,7 +25,6 @@ class UsersController extends Controller
     /**
      * Display a listing of users, optionally filtered by role.
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -58,7 +57,6 @@ class UsersController extends Controller
     /**
      * Store a newly created user in storage.
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
@@ -101,7 +99,7 @@ class UsersController extends Controller
     /**
      * Show the form for editing the specified user.
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\View\View
      */
     public function edit($id)
@@ -117,8 +115,7 @@ class UsersController extends Controller
     /**
      * Update the specified user in storage.
      *
-     * @param Request $request
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
@@ -162,7 +159,7 @@ class UsersController extends Controller
     /**
      * Remove the specified user from storage.
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
@@ -184,19 +181,20 @@ class UsersController extends Controller
     /**
      * Display password edit form.
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\View\View
      */
     public function passwordEdit($id)
     {
-        $user = User::findOrFail($id);
+        abort_unless((int) $id === Auth::id(), 404);
+        $user = Auth::user();
+
         return view('users.passwordEdit', compact('user'));
     }
 
     /**
      * Process password update for logged-in user.
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function passwordUpda(Request $request)
@@ -237,7 +235,6 @@ class UsersController extends Controller
     /**
      * Import users from Excel.
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function importUsers(Request $request)
@@ -254,12 +251,11 @@ class UsersController extends Controller
     /**
      * Display ironmongers associated with a distributor based on purchase order history.
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function ironAsoc(Request $request)
     {
-        $distributorId = $request->id ?: Auth::id();
+        $distributorId = Auth::user()->isAdmin() && $request->id ? $request->id : Auth::id();
         $buyerIds = Order::where('seller_id', $distributorId)->pluck('buyer_id')->unique()->filter();
         $users = User::whereIn('id', $buyerIds)->orderBy('name', 'asc')->get();
 

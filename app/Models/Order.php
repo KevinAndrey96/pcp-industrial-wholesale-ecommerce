@@ -10,11 +10,17 @@ class Order extends Model
     use HasFactory;
 
     const STATUS_INITIATED = 'Iniciado';
+
     const STATUS_PENDING = 'Pendiente';
+
     const STATUS_APPROVED = 'Aprobado';
+
     const STATUS_IN_TRANSIT = 'En Camino';
+
     const STATUS_DELIVERED = 'Entregado';
+
     const STATUS_REJECTED = 'Rechazado';
+
     const STATUS_RETURN = 'Devolución';
 
     protected $table = 'orders';
@@ -31,6 +37,22 @@ class Order extends Model
         'delivery_address',
         'city',
     ];
+
+    /**
+     * Buyers, sellers and administrators can read an order.
+     */
+    public function isVisibleTo(User $user): bool
+    {
+        return $user->isAdmin() || in_array($user->id, [$this->buyer_id, $this->seller_id], false);
+    }
+
+    /**
+     * Only the seller and administrators can quote or move an order through its workflow.
+     */
+    public function isManagedBy(User $user): bool
+    {
+        return $user->isAdmin() || (int) $this->seller_id === $user->id;
+    }
 
     public function buyer()
     {

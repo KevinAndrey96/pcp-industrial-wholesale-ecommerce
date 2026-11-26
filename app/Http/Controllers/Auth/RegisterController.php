@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\GeneralMail;
 use App\Models\PriceList;
-use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use Exception;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -34,6 +36,12 @@ class RegisterController extends Controller
      */
     protected $redirectTo = '/';
 
+    private const COUNTRY_CURRENCIES = [
+        'Colombia' => 'COP',
+        'Peru' => 'PEN',
+        'Mexico' => 'MXN',
+    ];
+
     /**
      * Create a new controller instance.
      *
@@ -47,40 +55,33 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
-
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['required', 'string', 'max:30'],
+            'country' => ['required', 'string', Rule::in(array_keys(self::COUNTRY_CURRENCIES))],
+            'city' => ['required', 'string', 'max:100'],
+            'document_type' => ['required', 'string', Rule::in(['CC', 'TI', 'NIT'])],
+            'document_number' => ['required', 'string', 'max:30'],
+            'establishment_name' => ['required', 'string', 'max:255'],
         ]);
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
      * @return \App\Models\User
      */
     protected function create(array $data)
     {
-        if ($data['country'] == 'Colombia') {
-            $list = PriceList::where('currency', 'like', 'COP')
-                                ->where('role', 'like', 'Ferretero')->first();
-            $list_id = $list->id;
-        } elseif ($data['country'] == 'Peru') {
-            $list = PriceList::where('currency', 'like', 'PEN')
-                ->where('role', 'like', 'Ferretero')->first();
-            $list_id = $list->id;
-        }  elseif ($data['country'] == 'Mexico') {
-            $list = PriceList::where('currency', 'like', 'MXN')
-                ->where('role', 'like', 'Ferretero')->first();
-            $list_id = $list->id;
-        }
+        $list = PriceList::where('currency', self::COUNTRY_CURRENCIES[$data['country']])
+            ->where('role', User::ROLE_IRONMONGER)
+            ->first();
 
         $user = User::create([
             'name' => $data['name'],
@@ -88,8 +89,8 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'country' => $data['country'],
             'city' => $data['city'],
-            'price_list_id' => $list_id,
-            'role' => 'Ferretero',
+            'price_list_id' => $list ? $list->id : null,
+            'role' => User::ROLE_IRONMONGER,
             'document_type' => $data['document_type'],
             'document_number' => $data['document_number'],
             'establishment_name' => $data['establishment_name'],
@@ -97,9 +98,14 @@ class RegisterController extends Controller
         ]);
 
         $subject = 'Notificación de registro';
-        $text = 'Sr o Sra '.$data['name']. ' usted has sido registrado en nuestra plataforma correctamente';
-        Mail::to($data['email'])->send(new GeneralMail($subject, $text));
+        $text = 'Sr o Sra '.$data['name'].' usted ha sido registrado en nuestra plataforma correctamente';
+
+        try {
+            Mail::to($data['email'])->send(new GeneralMail($subject, $text));
+        } catch (Exception $e) {
+            Log::warning('registration welcome email: '.$e->getMessage());
+        }
+
         return $user;
     }
-
 }
